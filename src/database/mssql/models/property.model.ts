@@ -7,12 +7,16 @@ import {
 	PrimaryKey,
 	ForeignKey,
 	BelongsTo,
+	BelongsToMany,
 	HasMany,
 	AllowNull,
 	Index
 } from 'sequelize-typescript';
 import { Tables } from '../connection/tables.mssql';
 import { User } from './user.model';
+import { City } from './city.model';
+import { Amenity } from './amenity.model';
+import { PropertyAmenity } from './property-amenity.model';
 import { PropertyMedia } from './property-media.model';
 import { PropertyType, AvailabilityStatus } from '@app/core/enums/domain.enum';
 
@@ -25,11 +29,10 @@ export enum PropertyColumns {
 	RentAmount = 'rentAmount',
 	Currency = 'currency',
 	DepositAmount = 'depositAmount',
-	City = 'city',
+	CityId = 'cityId',
 	AddressLine = 'addressLine',
 	Latitude = 'latitude',
 	Longitude = 'longitude',
-	Amenities = 'amenities',
 	AvailabilityStatus = 'availabilityStatus',
 	IsApprovedByAdmin = 'isApprovedByAdmin'
 }
@@ -76,10 +79,14 @@ export class Property extends Model<Property> {
 	@Column(DataType.DECIMAL(12, 2))
 	depositAmount?: string | null;
 
+	@ForeignKey(() => City)
 	@Index
 	@AllowNull(false)
-	@Column(DataType.STRING)
-	city!: string;
+	@Column(DataType.UUID)
+	cityId!: string;
+
+	@BelongsTo(() => City)
+	city?: City;
 
 	@AllowNull(false)
 	@Column(DataType.STRING)
@@ -92,9 +99,6 @@ export class Property extends Model<Property> {
 	@AllowNull(false)
 	@Column(DataType.DOUBLE)
 	longitude!: number;
-
-	@Column(DataType.TEXT)
-	amenities?: string | null;
 
 	@Index
 	@AllowNull(false)
@@ -109,4 +113,7 @@ export class Property extends Model<Property> {
 
 	@HasMany(() => PropertyMedia)
 	media?: PropertyMedia[];
+
+	@BelongsToMany(() => Amenity, () => PropertyAmenity)
+	amenities?: Amenity[];
 }

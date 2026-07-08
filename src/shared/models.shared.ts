@@ -7,4 +7,9 @@ interface AtPayload {
 	readonly sid?: string;
 }
 
-export { AtPayload };
+interface SessionMeta {
+	readonly userAgent?: string | null;
+	readonly ipAddress?: string | null;
+}
+
+export { AtPayload, SessionMeta };

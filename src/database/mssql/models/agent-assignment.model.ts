@@ -12,13 +12,14 @@ import {
 } from 'sequelize-typescript';
 import { Tables } from '../connection/tables.mssql';
 import { User } from './user.model';
+import { City } from './city.model';
 import { AssignmentStatus } from '@app/core/enums/domain.enum';
 
 export enum AgentAssignmentColumns {
 	Id = 'id',
 	CustomerId = 'customerId',
 	AgentId = 'agentId',
-	RequestedCity = 'requestedCity',
+	CityId = 'cityId',
 	Requirements = 'requirements',
 	Status = 'status',
 	AssignedAt = 'assignedAt',
@@ -48,9 +49,13 @@ export class AgentAssignment extends Model<AgentAssignment> {
 	@BelongsTo(() => User, 'agentId')
 	agent?: User;
 
+	@ForeignKey(() => City)
 	@AllowNull(false)
-	@Column(DataType.STRING)
-	requestedCity!: string;
+	@Column(DataType.UUID)
+	cityId!: string;
+
+	@BelongsTo(() => City)
+	city?: City;
 
 	@Column(DataType.TEXT)
 	requirements?: string | null;

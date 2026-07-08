@@ -1,7 +1,7 @@
 import { RoleType } from '@app/core/enums/app-role.enum';
 import { messageFactory, messages } from '@app/shared/messages.shared';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsBoolean, IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
 
 export class RegisterDto {
 	@ApiProperty({ example: 'user@example.com' })
@@ -50,6 +50,11 @@ export class LogoutDto {
 	@IsOptional()
 	@IsString()
 	readonly userId?: string;
+
+	@ApiPropertyOptional({ example: false, description: 'Revoke every active session for the user' })
+	@IsOptional()
+	@IsBoolean()
+	readonly allDevices?: boolean;
 }
 
 export class RefreshTokenDto {

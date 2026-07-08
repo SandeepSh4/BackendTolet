@@ -5,6 +5,7 @@ import { HttpStatus } from '@nestjs/common';
 import { Sequelize } from 'sequelize-typescript';
 import { MsSqlConstants } from './constants.mssql';
 import { models } from './models.connection.mssql';
+import { seedRoles, seedAmenities, seedCities } from './seed.mssql';
 
 export const sequelizeProvider = [
 	{
@@ -21,6 +22,16 @@ export const sequelizeProvider = [
 				// Auto-sync in non-production for development convenience.
 				if (appConfig.environment && appConfig.environment.toLowerCase() !== 'production') {
 					await sequelize.sync();
+				}
+
+				// Ensure the Roles master table is populated. Isolated so a not-yet-migrated
+				// table in production cannot abort startup.
+				try {
+					await seedRoles();
+					await seedCities();
+					await seedAmenities();
+				} catch (seedErr: any) {
+					_logger.log(messageFactory(messages.E4, [seedErr.stack]), HttpStatus.INTERNAL_SERVER_ERROR);
 				}
 
 				_logger.log(messages.S3, 200);

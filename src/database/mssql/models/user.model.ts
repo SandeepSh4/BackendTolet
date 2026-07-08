@@ -5,6 +5,8 @@ import {
 	DataType,
 	Default,
 	PrimaryKey,
+	ForeignKey,
+	BelongsTo,
 	Unique,
 	AllowNull,
 	HasOne,
@@ -13,10 +15,12 @@ import {
 import { RoleType } from '@app/core/enums/app-role.enum';
 import { KycStatus } from '@app/core/enums/domain.enum';
 import { Tables } from '../connection/tables.mssql';
+import { Role } from './role.model';
 import { OwnerProfile } from './owner-profile.model';
 import { AgentProfile } from './agent-profile.model';
 import { Property } from './property.model';
 import { KycVerification } from './kyc-verification.model';
+import { UserSession } from './user-session.model';
 
 export enum UserColumns {
 	Id = 'id',
@@ -26,7 +30,6 @@ export enum UserColumns {
 	Phone = 'phone',
 	Role = 'role',
 	KycStatus = 'kycStatus',
-	HashedRefreshToken = 'hashedRefreshToken',
 	IsActive = 'isActive'
 }
 
@@ -53,18 +56,19 @@ export class User extends Model<User> {
 	@Column(DataType.STRING)
 	phone?: string | null;
 
+	@ForeignKey(() => Role)
 	@AllowNull(false)
 	@Default(RoleType.SEEKER)
-	@Column(DataType.ENUM(...Object.values(RoleType)))
+	@Column(DataType.STRING)
 	role!: RoleType;
+
+	@BelongsTo(() => Role)
+	roleRef?: Role;
 
 	@AllowNull(false)
 	@Default(KycStatus.NONE)
 	@Column(DataType.ENUM(...Object.values(KycStatus)))
 	kycStatus!: KycStatus;
-
-	@Column(DataType.TEXT)
-	hashedRefreshToken?: string | null;
 
 	@AllowNull(false)
 	@Default(true)
@@ -82,4 +86,7 @@ export class User extends Model<User> {
 
 	@HasMany(() => KycVerification)
 	kyc?: KycVerification[];
+
+	@HasMany(() => UserSession)
+	sessions?: UserSession[];
 }

@@ -31,6 +31,9 @@ export const messages = {
 	A8: 'Refresh token expired. Login again.',
 	A9: 'Invalid refresh token',
 	A10: 'Registration successful',
+	A11: 'Session expired or revoked. Login again.',
+	A12: 'Logged out from all devices',
+	A13: 'Sessions fetched successfully',
 
 	// User Management
 	U1: 'Users fetched successfully',
@@ -39,7 +42,18 @@ export const messages = {
 	U4: 'User deleted successfully',
 	U5: 'User not found',
 	U6: 'User already exists with this email',
-	U7: 'User fetched successfully'
+	U7: 'User fetched successfully',
+
+	// Cities / Amenities (master data)
+	C1: 'Cities fetched successfully',
+	M1: 'Amenities fetched successfully',
+
+	// Property
+	P1: 'Property created successfully',
+	P2: 'Properties fetched successfully',
+	P3: 'Property updated successfully',
+	P4: 'Property deleted successfully',
+	P5: 'Property not found'
 };
 
 export const messageFactory = (template: string, args: any[]): string => {

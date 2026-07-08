@@ -3,18 +3,18 @@ import { AuthAbstractSvc } from './auth.abstract';
 import { DatabaseService } from '@app/database/database.service';
 import { LoginDto, LogoutDto, RefreshTokenDto, RegisterDto } from './dto/auth.dto';
 import { AppResponse } from '@app/shared/appresponse.shared';
-import { AtPayload } from '@app/shared/models.shared';
+import { AtPayload, SessionMeta } from '@app/shared/models.shared';
 
 @Injectable()
 export class AuthService implements AuthAbstractSvc {
 	constructor(private readonly _dbSvc: DatabaseService) {}
 
-	async register(registerInfo: RegisterDto): Promise<AppResponse> {
-		return this._dbSvc.authSqlTxn.register(registerInfo);
+	async register(registerInfo: RegisterDto, meta?: SessionMeta): Promise<AppResponse> {
+		return this._dbSvc.authSqlTxn.register(registerInfo, meta);
 	}
 
-	async login(loginInfo: LoginDto): Promise<AppResponse> {
-		return this._dbSvc.authSqlTxn.login(loginInfo);
+	async login(loginInfo: LoginDto, meta?: SessionMeta): Promise<AppResponse> {
+		return this._dbSvc.authSqlTxn.login(loginInfo, meta);
 	}
 
 	async logout(logoutInfo: LogoutDto, claims: AtPayload): Promise<AppResponse> {

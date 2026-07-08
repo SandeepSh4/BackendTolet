@@ -12,16 +12,17 @@ import {
 } from 'sequelize-typescript';
 import { Tables } from '../connection/tables.mssql';
 import { AgentProfile } from './agent-profile.model';
+import { City } from './city.model';
 
 export enum AgentCoverageCityColumns {
 	Id = 'id',
 	AgentId = 'agentId',
-	City = 'city'
+	CityId = 'cityId'
 }
 
 @Table({
 	tableName: Tables.AgentCoverageCities,
-	indexes: [{ unique: true, fields: ['agentId', 'city'] }]
+	indexes: [{ unique: true, fields: ['agentId', 'cityId'] }]
 })
 export class AgentCoverageCity extends Model<AgentCoverageCity> {
 	@PrimaryKey
@@ -37,8 +38,12 @@ export class AgentCoverageCity extends Model<AgentCoverageCity> {
 	@BelongsTo(() => AgentProfile)
 	agent?: AgentProfile;
 
+	@ForeignKey(() => City)
 	@Index
 	@AllowNull(false)
-	@Column(DataType.STRING)
-	city!: string;
+	@Column(DataType.UUID)
+	cityId!: string;
+
+	@BelongsTo(() => City)
+	city?: City;
 }
