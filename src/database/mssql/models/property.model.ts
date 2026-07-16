@@ -16,16 +16,18 @@ import { Tables } from '../connection/tables.mssql';
 import { User } from './user.model';
 import { City } from './city.model';
 import { Amenity } from './amenity.model';
+import { PropertyType } from './property-type.model';
 import { PropertyAmenity } from './property-amenity.model';
 import { PropertyMedia } from './property-media.model';
-import { PropertyType, AvailabilityStatus } from '@app/core/enums/domain.enum';
+import { Listing } from './listing.model';
+import { AvailabilityStatus } from '@app/core/enums/domain.enum';
 
 export enum PropertyColumns {
 	Id = 'id',
 	OwnerId = 'ownerId',
 	Title = 'title',
 	Description = 'description',
-	Type = 'type',
+	PropertyTypeId = 'propertyTypeId',
 	RentAmount = 'rentAmount',
 	Currency = 'currency',
 	DepositAmount = 'depositAmount',
@@ -63,9 +65,13 @@ export class Property extends Model<Property> {
 	@Column(DataType.TEXT)
 	description!: string;
 
+	@ForeignKey(() => PropertyType)
 	@AllowNull(false)
-	@Column(DataType.ENUM(...Object.values(PropertyType)))
-	type!: PropertyType;
+	@Column(DataType.UUID)
+	propertyTypeId!: string;
+
+	@BelongsTo(() => PropertyType)
+	propertyType?: PropertyType;
 
 	@AllowNull(false)
 	@Column(DataType.DECIMAL(12, 2))
@@ -113,6 +119,10 @@ export class Property extends Model<Property> {
 
 	@HasMany(() => PropertyMedia)
 	media?: PropertyMedia[];
+
+	// The offers on this property (sale / rent / short-stay) — at most one per type.
+	@HasMany(() => Listing)
+	listings?: Listing[];
 
 	@BelongsToMany(() => Amenity, () => PropertyAmenity)
 	amenities?: Amenity[];

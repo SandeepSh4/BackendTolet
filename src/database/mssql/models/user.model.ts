@@ -30,7 +30,8 @@ export enum UserColumns {
 	Phone = 'phone',
 	Role = 'role',
 	KycStatus = 'kycStatus',
-	IsActive = 'isActive'
+	IsActive = 'isActive',
+	MediaUsedBytes = 'mediaUsedBytes'
 }
 
 @Table({ tableName: Tables.Users })
@@ -74,6 +75,12 @@ export class User extends Model<User> {
 	@Default(true)
 	@Column(DataType.BOOLEAN)
 	isActive!: boolean;
+
+	// Running total of bytes this user has uploaded across all media (quota tracking).
+	@AllowNull(false)
+	@Default(0)
+	@Column(DataType.BIGINT)
+	mediaUsedBytes!: number;
 
 	@HasOne(() => OwnerProfile)
 	ownerProfile?: OwnerProfile;

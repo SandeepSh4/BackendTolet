@@ -5,6 +5,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from './guards/authorization.guard';
 import { RolesGuard } from './guards/roles.guard';
+import { BlobStorageService } from './azure/blob-storage.service';
 import AppLogger from './logger/app-logger';
 
 const getProviders = (): any[] => {
@@ -12,6 +13,7 @@ const getProviders = (): any[] => {
 		AppConfigService,
 		AppLogger,
 		JwtService,
+		BlobStorageService,
 		{ provide: APP_GUARD, useClass: AuthGuard },
 		{ provide: APP_GUARD, useClass: RolesGuard }
 	];
@@ -25,7 +27,7 @@ const importProviders = (): any[] => {
 };
 
 const exportProviders = (): any[] => {
-	return [AppConfigService, AppLogger, DatabaseModule, JwtService];
+	return [AppConfigService, AppLogger, DatabaseModule, JwtService, BlobStorageService];
 };
 
 export { exportProviders, getProviders, importProviders };

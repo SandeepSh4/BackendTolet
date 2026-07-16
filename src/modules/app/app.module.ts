@@ -9,9 +9,12 @@ import { InquiryModule } from '../inquiry/inquiry.module';
 import { PropertyModule } from '../property/property.module';
 import { CityModule } from '../city/city.module';
 import { AmenityModule } from '../amenity/amenity.module';
+import { MediaModule } from '../media/media.module';
+import { PropertyTypeModule } from '../property-type/property-type.module';
+import { GeoModule } from '../geo/geo.module';
 
 @Module({
-	imports: [CoreModule, AuthorizationModule, SessionModule, UserModule, InquiryModule, PropertyModule, CityModule, AmenityModule],
+	imports: [CoreModule, AuthorizationModule, SessionModule, UserModule, InquiryModule, PropertyModule, CityModule, AmenityModule, MediaModule, PropertyTypeModule, GeoModule],
 	controllers: [AppController],
 	providers: [AppService]
 })

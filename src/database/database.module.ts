@@ -17,6 +17,8 @@ import { CityAbstractSqlDao } from './mssql/abstract/city.abstract';
 import { CitySqlDao } from './mssql/dao/city.dao';
 import { AmenityAbstractSqlDao } from './mssql/abstract/amenity.abstract';
 import { AmenitySqlDao } from './mssql/dao/amenity.dao';
+import { PropertyTypeAbstractSqlDao } from './mssql/abstract/property-type.abstract';
+import { PropertyTypeSqlDao } from './mssql/dao/property-type.dao';
 
 @Module({
 	providers: [
@@ -30,7 +32,8 @@ import { AmenitySqlDao } from './mssql/dao/amenity.dao';
 		{ provide: InquiryAbstractSqlDao, useClass: InquirySqlDao },
 		{ provide: PropertyAbstractSqlDao, useClass: PropertySqlDao },
 		{ provide: CityAbstractSqlDao, useClass: CitySqlDao },
-		{ provide: AmenityAbstractSqlDao, useClass: AmenitySqlDao }
+		{ provide: AmenityAbstractSqlDao, useClass: AmenitySqlDao },
+		{ provide: PropertyTypeAbstractSqlDao, useClass: PropertyTypeSqlDao }
 	],
 	exports: [
 		DatabaseService,
@@ -41,7 +44,8 @@ import { AmenitySqlDao } from './mssql/dao/amenity.dao';
 		{ provide: InquiryAbstractSqlDao, useClass: InquirySqlDao },
 		{ provide: PropertyAbstractSqlDao, useClass: PropertySqlDao },
 		{ provide: CityAbstractSqlDao, useClass: CitySqlDao },
-		{ provide: AmenityAbstractSqlDao, useClass: AmenitySqlDao }
+		{ provide: AmenityAbstractSqlDao, useClass: AmenitySqlDao },
+		{ provide: PropertyTypeAbstractSqlDao, useClass: PropertyTypeSqlDao }
 	]
 })
 export class DatabaseModule { }

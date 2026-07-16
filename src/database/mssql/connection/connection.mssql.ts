@@ -5,7 +5,7 @@ import { HttpStatus } from '@nestjs/common';
 import { Sequelize } from 'sequelize-typescript';
 import { MsSqlConstants } from './constants.mssql';
 import { models } from './models.connection.mssql';
-import { seedRoles, seedAmenities, seedCities } from './seed.mssql';
+import { seedRoles, seedAmenities, seedCities, seedPropertyTypes } from './seed.mssql';
 
 export const sequelizeProvider = [
 	{
@@ -30,6 +30,7 @@ export const sequelizeProvider = [
 					await seedRoles();
 					await seedCities();
 					await seedAmenities();
+					await seedPropertyTypes();
 				} catch (seedErr: any) {
 					_logger.log(messageFactory(messages.E4, [seedErr.stack]), HttpStatus.INTERNAL_SERVER_ERROR);
 				}

@@ -6,6 +6,7 @@ import { InquiryAbstractSqlDao } from './mssql/abstract/inquiry.abstract';
 import { PropertyAbstractSqlDao } from './mssql/abstract/property.abstract';
 import { CityAbstractSqlDao } from './mssql/abstract/city.abstract';
 import { AmenityAbstractSqlDao } from './mssql/abstract/amenity.abstract';
+import { PropertyTypeAbstractSqlDao } from './mssql/abstract/property-type.abstract';
 
 @Injectable()
 export class DatabaseService {
@@ -16,6 +17,7 @@ export class DatabaseService {
 		public inquirySqlTxn: InquiryAbstractSqlDao,
 		public propertySqlTxn: PropertyAbstractSqlDao,
 		public citySqlTxn: CityAbstractSqlDao,
-		public amenitySqlTxn: AmenityAbstractSqlDao
+		public amenitySqlTxn: AmenityAbstractSqlDao,
+		public propertyTypeSqlTxn: PropertyTypeAbstractSqlDao
 	) { }
 }

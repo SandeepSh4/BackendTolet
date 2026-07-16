@@ -44,16 +44,37 @@ export const messages = {
 	U6: 'User already exists with this email',
 	U7: 'User fetched successfully',
 
-	// Cities / Amenities (master data)
+	// Cities / Amenities / Property types (master data)
 	C1: 'Cities fetched successfully',
 	M1: 'Amenities fetched successfully',
+	PT1: 'Property types fetched successfully',
+
+	// Media
+	MED1: 'Upload authorized',
+	MED2: 'Storage quota exceeded. Delete some media to free up space.',
+	MED3: 'Media usage fetched',
+	PM1: 'Media added successfully',
+	PM2: 'Media reordered successfully',
+	PM3: 'Media deleted successfully',
+	PM4: 'Media not found',
 
 	// Property
 	P1: 'Property created successfully',
 	P2: 'Properties fetched successfully',
 	P3: 'Property updated successfully',
 	P4: 'Property deleted successfully',
-	P5: 'Property not found'
+	P5: 'Property not found',
+
+	// Listings
+	L1: '{0} listings are not allowed for property type {1}',
+	L2: 'Duplicate {0} listing — a property can carry only one listing per type',
+	L3: 'At least one listing or a rent amount is required',
+
+	// Geo (Mappls proxy)
+	G1: 'Place suggestions fetched',
+	G2: 'Address resolved',
+	G3: 'Geocoding service unavailable',
+	G4: 'Map token issued'
 };
 
 export const messageFactory = (template: string, args: any[]): string => {

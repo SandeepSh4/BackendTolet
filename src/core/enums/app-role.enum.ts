@@ -11,5 +11,6 @@ export const RoleGroup = {
 	AGENT_ONLY: [RoleType.AGENT],
 	SEEKER_ONLY: [RoleType.SEEKER],
 	OWNER_AGENT: [RoleType.OWNER, RoleType.AGENT],
+	OWNER_ADMIN: [RoleType.OWNER, RoleType.ADMIN],
 	ALL_ROLES: [RoleType.SEEKER, RoleType.OWNER, RoleType.AGENT, RoleType.ADMIN]
 };

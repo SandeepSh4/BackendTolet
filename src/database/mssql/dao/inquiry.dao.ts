@@ -21,7 +21,7 @@ export class InquirySqlDao implements InquiryAbstractSqlDao {
 
     async createInquiry(createInquiryInfo: CreateInquiryDto, claims: AtPayload): Promise<AppResponse> {
         try {
-            if (claims?.role !== RoleType.SEEKER) {
+            if (claims?.role !== RoleType.SEEKER && claims?.role !== RoleType.ADMIN) {
                 return createResponse(HttpStatus.FORBIDDEN, messages.E7.replace('{0}', 'create inquiry'));
             }
 

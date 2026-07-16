@@ -5,17 +5,23 @@ export enum KycStatus {
 	REJECTED = 'REJECTED'
 }
 
-export enum PropertyType {
-	ROOM = 'ROOM',
-	HOUSE = 'HOUSE',
-	APARTMENT = 'APARTMENT',
-	PG = 'PG'
-}
-
 export enum AvailabilityStatus {
 	AVAILABLE = 'AVAILABLE',
 	RESERVED = 'RESERVED',
 	UNAVAILABLE = 'UNAVAILABLE'
+}
+
+// How a property is offered: one-time sale, recurring rent, or per-night homestay.
+export enum ListingType {
+	SALE = 'SALE',
+	RENT = 'RENT',
+	SHORT_STAY = 'SHORT_STAY'
+}
+
+// Billing period for RENT listings.
+export enum RentPeriod {
+	MONTHLY = 'MONTHLY',
+	YEARLY = 'YEARLY'
 }
 
 export enum MediaType {

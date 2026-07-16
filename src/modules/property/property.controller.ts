@@ -5,7 +5,7 @@ import { HasRoles } from '@app/core/decorators/roles.decorator';
 import { RoleGroup } from '@app/core/enums/app-role.enum';
 import { AppResponse } from '@app/shared/appresponse.shared';
 import { PropertyAbstractSvc } from './property.abstract';
-import { CreatePropertyDto, MyListingsDto, SearchPropertyDto, UpdatePropertyDto } from './dto/property.dto';
+import { AttachMediaDto, CreatePropertyDto, MyListingsDto, ReorderMediaDto, SearchPropertyDto, UpdatePropertyDto } from './dto/property.dto';
 
 @Controller('properties')
 @ApiTags('Property')
@@ -21,7 +21,7 @@ export class PropertyController {
 	}
 
 	@Authorize()
-	@HasRoles(RoleGroup.OWNER_ONLY)
+	@HasRoles(RoleGroup.OWNER_ADMIN)
 	@HttpCode(HttpStatus.OK)
 	@Post('my-listings')
 	@ApiOperation({ summary: "List the current owner's properties (filters in body)" })
@@ -30,7 +30,7 @@ export class PropertyController {
 	}
 
 	@Authorize()
-	@HasRoles(RoleGroup.OWNER_ONLY)
+	@HasRoles(RoleGroup.OWNER_ADMIN)
 	@Post()
 	@ApiOperation({ summary: 'Create a new property listing (owner only)' })
 	async create(@Body() createInfo: CreatePropertyDto, @Req() req: any): Promise<AppResponse> {
@@ -45,7 +45,38 @@ export class PropertyController {
 	}
 
 	@Authorize()
-	@HasRoles(RoleGroup.OWNER_ONLY)
+	@Get(':id/media')
+	@ApiOperation({ summary: 'List a property\'s media (ordered)' })
+	async listMedia(@Param('id') id: string): Promise<AppResponse> {
+		return this._propertySvc.listMedia(id);
+	}
+
+	@Authorize()
+	@HasRoles(RoleGroup.OWNER_ADMIN)
+	@Post(':id/media')
+	@ApiOperation({ summary: 'Attach an uploaded blob to a property (owner/admin)' })
+	async addMedia(@Param('id') id: string, @Body() info: AttachMediaDto, @Req() req: any): Promise<AppResponse> {
+		return this._propertySvc.addMedia(id, info, req.claims);
+	}
+
+	@Authorize()
+	@HasRoles(RoleGroup.OWNER_ADMIN)
+	@Patch(':id/media/reorder')
+	@ApiOperation({ summary: 'Reorder a property\'s media sequence (owner/admin)' })
+	async reorderMedia(@Param('id') id: string, @Body() info: ReorderMediaDto, @Req() req: any): Promise<AppResponse> {
+		return this._propertySvc.reorderMedia(id, info, req.claims);
+	}
+
+	@Authorize()
+	@HasRoles(RoleGroup.OWNER_ADMIN)
+	@Delete(':id/media/:mediaId')
+	@ApiOperation({ summary: 'Delete a media item and its blob (owner/admin)' })
+	async deleteMedia(@Param('id') id: string, @Param('mediaId') mediaId: string, @Req() req: any): Promise<AppResponse> {
+		return this._propertySvc.deleteMedia(id, mediaId, req.claims);
+	}
+
+	@Authorize()
+	@HasRoles(RoleGroup.OWNER_ADMIN)
 	@Patch(':id')
 	@ApiOperation({ summary: 'Update a property listing (owner only)' })
 	async update(@Param('id') id: string, @Body() updateInfo: UpdatePropertyDto, @Req() req: any): Promise<AppResponse> {
@@ -53,7 +84,7 @@ export class PropertyController {
 	}
 
 	@Authorize()
-	@HasRoles(RoleGroup.OWNER_ONLY)
+	@HasRoles(RoleGroup.OWNER_ADMIN)
 	@Delete(':id')
 	@ApiOperation({ summary: 'Delete a property listing (owner only)' })
 	async remove(@Param('id') id: string, @Req() req: any): Promise<AppResponse> {
