@@ -19,6 +19,12 @@ import { AmenityAbstractSqlDao } from './mssql/abstract/amenity.abstract';
 import { AmenitySqlDao } from './mssql/dao/amenity.dao';
 import { PropertyTypeAbstractSqlDao } from './mssql/abstract/property-type.abstract';
 import { PropertyTypeSqlDao } from './mssql/dao/property-type.dao';
+import { ApplicationAbstractSqlDao } from './mssql/abstract/application.abstract';
+import { ApplicationSqlDao } from './mssql/dao/application.dao';
+import { NotificationAbstractSqlDao } from './mssql/abstract/notification.abstract';
+import { NotificationSqlDao } from './mssql/dao/notification.dao';
+import { ChatAbstractSqlDao } from './mssql/abstract/chat.abstract';
+import { ChatSqlDao } from './mssql/dao/chat.dao';
 
 @Module({
 	providers: [
@@ -33,7 +39,10 @@ import { PropertyTypeSqlDao } from './mssql/dao/property-type.dao';
 		{ provide: PropertyAbstractSqlDao, useClass: PropertySqlDao },
 		{ provide: CityAbstractSqlDao, useClass: CitySqlDao },
 		{ provide: AmenityAbstractSqlDao, useClass: AmenitySqlDao },
-		{ provide: PropertyTypeAbstractSqlDao, useClass: PropertyTypeSqlDao }
+		{ provide: PropertyTypeAbstractSqlDao, useClass: PropertyTypeSqlDao },
+		{ provide: ApplicationAbstractSqlDao, useClass: ApplicationSqlDao },
+		{ provide: NotificationAbstractSqlDao, useClass: NotificationSqlDao },
+		{ provide: ChatAbstractSqlDao, useClass: ChatSqlDao }
 	],
 	exports: [
 		DatabaseService,
@@ -45,7 +54,10 @@ import { PropertyTypeSqlDao } from './mssql/dao/property-type.dao';
 		{ provide: PropertyAbstractSqlDao, useClass: PropertySqlDao },
 		{ provide: CityAbstractSqlDao, useClass: CitySqlDao },
 		{ provide: AmenityAbstractSqlDao, useClass: AmenitySqlDao },
-		{ provide: PropertyTypeAbstractSqlDao, useClass: PropertyTypeSqlDao }
+		{ provide: PropertyTypeAbstractSqlDao, useClass: PropertyTypeSqlDao },
+		{ provide: ApplicationAbstractSqlDao, useClass: ApplicationSqlDao },
+		{ provide: NotificationAbstractSqlDao, useClass: NotificationSqlDao },
+		{ provide: ChatAbstractSqlDao, useClass: ChatSqlDao }
 	]
 })
 export class DatabaseModule { }

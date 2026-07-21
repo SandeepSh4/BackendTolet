@@ -39,9 +39,9 @@ export class PropertyController {
 
 	@Authorize()
 	@Get(':id')
-	@ApiOperation({ summary: 'Get a single property with owner and media' })
-	async getById(@Param('id') id: string): Promise<AppResponse> {
-		return this._propertySvc.getById(id);
+	@ApiOperation({ summary: 'Get a single property with owner and media (owner contact gated by accepted application)' })
+	async getById(@Param('id') id: string, @Req() req: any): Promise<AppResponse> {
+		return this._propertySvc.getById(id, req.claims);
 	}
 
 	@Authorize()

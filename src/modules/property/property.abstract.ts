@@ -6,7 +6,7 @@ export abstract class PropertyAbstractSvc {
 	abstract search(filters: SearchPropertyDto): Promise<AppResponse>;
 	abstract create(createInfo: CreatePropertyDto, claims: AtPayload): Promise<AppResponse>;
 	abstract myListings(filters: MyListingsDto, claims: AtPayload): Promise<AppResponse>;
-	abstract getById(id: string): Promise<AppResponse>;
+	abstract getById(id: string, claims: AtPayload): Promise<AppResponse>;
 	abstract update(id: string, updateInfo: UpdatePropertyDto, claims: AtPayload): Promise<AppResponse>;
 	abstract remove(id: string, claims: AtPayload): Promise<AppResponse>;
 	abstract listMedia(propertyId: string): Promise<AppResponse>;

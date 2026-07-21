@@ -29,6 +29,21 @@ export enum MediaType {
 	VIDEO = 'VIDEO'
 }
 
+// Lifecycle of a seeker's application for a property.
+export enum ApplicationStatus {
+	PENDING = 'PENDING',
+	ACCEPTED = 'ACCEPTED',
+	REJECTED = 'REJECTED',
+	WITHDRAWN = 'WITHDRAWN'
+}
+
+// Notification types — the payload carries ids for deep-linking in the UI.
+export enum NotificationType {
+	APPLICATION_RECEIVED = 'APPLICATION_RECEIVED',
+	APPLICATION_ACCEPTED = 'APPLICATION_ACCEPTED',
+	APPLICATION_REJECTED = 'APPLICATION_REJECTED'
+}
+
 export enum InquiryStatus {
 	OPEN = 'OPEN',
 	RESPONDED = 'RESPONDED',

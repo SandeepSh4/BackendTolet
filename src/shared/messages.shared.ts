@@ -74,7 +74,33 @@ export const messages = {
 	G1: 'Place suggestions fetched',
 	G2: 'Address resolved',
 	G3: 'Geocoding service unavailable',
-	G4: 'Map token issued'
+	G4: 'Map token issued',
+
+	// Property applications
+	AP1: 'Application submitted successfully',
+	AP2: 'Applications fetched successfully',
+	AP3: 'Application accepted',
+	AP4: 'Application rejected',
+	AP5: 'Application withdrawn',
+	AP6: 'Application not found',
+	AP7: 'You already have an active application for this property',
+	AP8: 'You cannot apply for your own property',
+	AP9: 'Complete KYC verification before applying',
+	AP10: 'Only pending applications can be {0}',
+
+	// Notifications
+	N1: 'Notifications fetched successfully',
+	N2: 'Notifications marked as read',
+
+	// Chat
+	CH1: 'Conversation ready',
+	CH2: 'Conversations fetched successfully',
+	CH3: 'Messages fetched successfully',
+	CH4: 'Message sent',
+	CH5: 'Conversation not found',
+	CH6: 'Chat unlocks after the application is accepted',
+	CH7: 'Message cannot be empty',
+	CH8: 'You are sending messages too quickly — slow down'
 };
 
 export const messageFactory = (template: string, args: any[]): string => {

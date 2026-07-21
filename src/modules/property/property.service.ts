@@ -21,8 +21,8 @@ export class PropertyService implements PropertyAbstractSvc {
 		return this._dbSvc.propertySqlTxn.myListings(filters, claims);
 	}
 
-	async getById(id: string): Promise<AppResponse> {
-		return this._dbSvc.propertySqlTxn.getById(id);
+	async getById(id: string, claims: AtPayload): Promise<AppResponse> {
+		return this._dbSvc.propertySqlTxn.getById(id, claims);
 	}
 
 	async update(id: string, updateInfo: UpdatePropertyDto, claims: AtPayload): Promise<AppResponse> {

@@ -18,10 +18,16 @@ export enum MessageColumns {
 	ConversationId = 'conversationId',
 	SenderId = 'senderId',
 	Body = 'body',
+	DeliveredAt = 'deliveredAt',
 	ReadAt = 'readAt'
 }
 
-@Table({ tableName: Tables.Messages })
+// Delivery ticks derive from the two timestamps: row persisted = sent (✓),
+// deliveredAt = received by the peer's client (✓✓), readAt = seen (blue ✓✓).
+@Table({
+	tableName: Tables.Messages,
+	indexes: [{ fields: ['conversationId', 'createdAt'] }]
+})
 export class Message extends Model<Message> {
 	@PrimaryKey
 	@Default(DataType.UUIDV4)
@@ -48,6 +54,11 @@ export class Message extends Model<Message> {
 	@Column(DataType.TEXT)
 	body!: string;
 
+	// Set when the recipient's client acks receipt (grey double tick).
+	@Column(DataType.DATE)
+	deliveredAt?: Date | null;
+
+	// Set when the recipient views the conversation (blue double tick).
 	@Column(DataType.DATE)
 	readAt?: Date | null;
 }

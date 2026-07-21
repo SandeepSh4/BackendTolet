@@ -7,10 +7,14 @@ import cors from 'cors';
 import { corsOptions } from '@app/core/cors.config';
 import { json, urlencoded } from 'express';
 import helmet from 'helmet';
+import { AuthSocketAdapter } from '@app/core/realtime/auth-socket.adapter';
 
 export default function bootstrap(app: INestApplication, appConfigSvcObj: AppConfigService) {
 	// Global prefix
 	app.setGlobalPrefix('api');
+
+	// Realtime: JWT-authenticated Socket.IO handshake (notifications, chat later).
+	app.useWebSocketAdapter(new AuthSocketAdapter(app));
 
 	// Express middlewares
 	app.use(json({ limit: '10mb' }));

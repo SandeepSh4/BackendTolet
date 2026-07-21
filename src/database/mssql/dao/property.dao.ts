@@ -17,6 +17,8 @@ import {
 	ListingColumns,
 	StayPricingTier,
 	StayPricingTierColumns,
+	PropertyApplication,
+	PropertyApplicationColumns,
 	User,
 	UserColumns
 } from '../models';
@@ -25,7 +27,7 @@ import { AppConfigService } from '@app/config/appconfig.service';
 import { AppResponse, createResponse } from '@app/shared/appresponse.shared';
 import { messageFactory, messages } from '@app/shared/messages.shared';
 import { AtPayload } from '@app/shared/models.shared';
-import { AvailabilityStatus, ListingType, MediaType, RentPeriod } from '@app/core/enums/domain.enum';
+import { ApplicationStatus, AvailabilityStatus, ListingType, MediaType, RentPeriod } from '@app/core/enums/domain.enum';
 import { RoleType } from '@app/core/enums/app-role.enum';
 import { BlobStorageService } from '@app/core/azure/blob-storage.service';
 import {
@@ -51,6 +53,7 @@ export class PropertySqlDao implements PropertyAbstractSqlDao {
 		@Inject(MsSqlConstants.PROPERTY_TYPES) private _propertyTypeModel: typeof PropertyType,
 		@Inject(MsSqlConstants.LISTINGS) private _listingModel: typeof Listing,
 		@Inject(MsSqlConstants.STAY_PRICING_TIERS) private _stayTierModel: typeof StayPricingTier,
+		@Inject(MsSqlConstants.PROPERTY_APPLICATIONS) private _applicationModel: typeof PropertyApplication,
 		@Inject(MsSqlConstants.USERS) private _userModel: typeof User,
 		readonly _loggerSvc: AppLogger,
 		private readonly _blobSvc: BlobStorageService,
@@ -84,11 +87,36 @@ export class PropertySqlDao implements PropertyAbstractSqlDao {
 			if (!(await this._applyCityFilter(where, filters.city))) {
 				return this._emptyPage(filters.page, filters.pageSize);
 			}
-			return this._paginatedFind(where, filters.page, filters.pageSize, this._buildListingWhere(filters));
+			const response = await this._paginatedFind(where, filters.page, filters.pageSize, this._buildListingWhere(filters));
+			await this._attachPendingApplicationCounts(response);
+			return response;
 		} catch (error: any) {
 			this._loggerSvc.error(error, HttpStatus.INTERNAL_SERVER_ERROR, claims?.sid);
 			return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, messages.E2);
 		}
+	}
+
+	// Decorates my-listings items with the number of PENDING applications so the
+	// owner sees "N applied" per property.
+	private async _attachPendingApplicationCounts(response: AppResponse): Promise<void> {
+		const items: any[] = (response as any)?.data?.items ?? [];
+		if (!items.length) return;
+		const counts = (await this._applicationModel.findAll({
+			where: {
+				[PropertyApplicationColumns.PropertyId]: { [Op.in]: items.map((i) => i.id) },
+				[PropertyApplicationColumns.Status]: ApplicationStatus.PENDING
+			},
+			attributes: [
+				PropertyApplicationColumns.PropertyId,
+				[literal('COUNT(*)'), 'pending']
+			],
+			group: [PropertyApplicationColumns.PropertyId],
+			raw: true
+		})) as any[];
+		const byProperty = new Map(counts.map((c) => [c.propertyId, Number(c.pending)]));
+		items.forEach((item) => {
+			item.pendingApplications = byProperty.get(item.id) ?? 0;
+		});
 	}
 
 	async create(createInfo: CreatePropertyDto, claims: AtPayload): Promise<AppResponse> {
@@ -149,13 +177,36 @@ export class PropertySqlDao implements PropertyAbstractSqlDao {
 		}
 	}
 
-	async getById(id: string): Promise<AppResponse> {
+	async getById(id: string, claims: AtPayload): Promise<AppResponse> {
 		try {
 			const property = await this._findFull(id);
 			if (!property) {
 				return createResponse(HttpStatus.NOT_FOUND, messages.P5);
 			}
-			return createResponse(HttpStatus.OK, messages.P2, await this._serializeProperty(property));
+			const json = await this._serializeProperty(property);
+
+			// Contact gating: the owner's phone/email are private until the viewer's
+			// application is ACCEPTED (the owner and admins always see them).
+			const isOwnerOrAdmin = claims && (property.ownerId === claims.sub || claims.role === RoleType.ADMIN);
+			let contactUnlocked = Boolean(isOwnerOrAdmin);
+			if (!contactUnlocked && claims?.sub) {
+				const accepted = await this._applicationModel.findOne({
+					where: {
+						[PropertyApplicationColumns.PropertyId]: id,
+						[PropertyApplicationColumns.SeekerId]: claims.sub,
+						[PropertyApplicationColumns.Status]: ApplicationStatus.ACCEPTED
+					},
+					attributes: [PropertyApplicationColumns.Id]
+				});
+				contactUnlocked = Boolean(accepted);
+			}
+			if (!contactUnlocked && json.owner) {
+				delete json.owner.phone;
+				delete json.owner.email;
+			}
+			json.contactUnlocked = contactUnlocked;
+
+			return createResponse(HttpStatus.OK, messages.P2, json);
 		} catch (error: any) {
 			this._loggerSvc.error(error, HttpStatus.INTERNAL_SERVER_ERROR);
 			return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, messages.E2);
@@ -252,6 +303,10 @@ export class PropertySqlDao implements PropertyAbstractSqlDao {
 
 			// Listings (and their stay-pricing tiers) go with the property.
 			await this._destroyListings(id);
+
+			// Applications too — done explicitly so the delete never depends on how
+			// the FK was created (sync() defaults to NO ACTION, blocking the delete).
+			await this._applicationModel.destroy({ where: { [PropertyApplicationColumns.PropertyId]: id } });
 
 			await property.destroy();
 			return createResponse(HttpStatus.OK, messages.P4);
@@ -478,8 +533,15 @@ export class PropertySqlDao implements PropertyAbstractSqlDao {
 			transaction
 		});
 		if (!rows.length) return;
+		const listingIds = rows.map((r) => r.id);
+		// Applications keep their history but drop the offer reference — the
+		// listingId FK (NO ACTION) would otherwise block the listing delete.
+		await this._applicationModel.update(
+			{ [PropertyApplicationColumns.ListingId]: null } as any,
+			{ where: { [PropertyApplicationColumns.ListingId]: { [Op.in]: listingIds } }, transaction }
+		);
 		await this._stayTierModel.destroy({
-			where: { [StayPricingTierColumns.ListingId]: { [Op.in]: rows.map((r) => r.id) } },
+			where: { [StayPricingTierColumns.ListingId]: { [Op.in]: listingIds } },
 			transaction
 		});
 		await this._listingModel.destroy({ where: { [ListingColumns.PropertyId]: propertyId }, transaction });
@@ -726,7 +788,9 @@ export class PropertySqlDao implements PropertyAbstractSqlDao {
 			where: geoWhere ? ({ [Op.and]: [where, geoWhere] } as WhereOptions) : where,
 			attributes,
 			include: [
-				{ model: this._userModel, attributes: [UserColumns.Id, UserColumns.FullName, UserColumns.Phone, UserColumns.Email] },
+				// Contact gating: cards never carry the owner's phone/email — those are
+				// revealed on the detail endpoint only after an accepted application.
+				{ model: this._userModel, attributes: [UserColumns.Id, UserColumns.FullName] },
 				this._cityInclude(),
 				this._propertyTypeInclude(),
 				this._listingInclude(listingWhere),

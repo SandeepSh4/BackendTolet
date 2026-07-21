@@ -7,6 +7,9 @@ import { PropertyAbstractSqlDao } from './mssql/abstract/property.abstract';
 import { CityAbstractSqlDao } from './mssql/abstract/city.abstract';
 import { AmenityAbstractSqlDao } from './mssql/abstract/amenity.abstract';
 import { PropertyTypeAbstractSqlDao } from './mssql/abstract/property-type.abstract';
+import { ApplicationAbstractSqlDao } from './mssql/abstract/application.abstract';
+import { NotificationAbstractSqlDao } from './mssql/abstract/notification.abstract';
+import { ChatAbstractSqlDao } from './mssql/abstract/chat.abstract';
 
 @Injectable()
 export class DatabaseService {
@@ -18,6 +21,9 @@ export class DatabaseService {
 		public propertySqlTxn: PropertyAbstractSqlDao,
 		public citySqlTxn: CityAbstractSqlDao,
 		public amenitySqlTxn: AmenityAbstractSqlDao,
-		public propertyTypeSqlTxn: PropertyTypeAbstractSqlDao
+		public propertyTypeSqlTxn: PropertyTypeAbstractSqlDao,
+		public applicationSqlTxn: ApplicationAbstractSqlDao,
+		public notificationSqlTxn: NotificationAbstractSqlDao,
+		public chatSqlTxn: ChatAbstractSqlDao
 	) { }
 }

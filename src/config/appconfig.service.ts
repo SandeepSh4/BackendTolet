@@ -9,7 +9,11 @@ export class AppConfigService {
 		this.envConfig.app = {
 			port: parseInt(process.env.PORT ?? '3000', 10),
 			environment: process.env.NODE_ENV ?? 'development',
-			corsOrigins: process.env.CORS_ORIGINS ?? ''
+			corsOrigins: process.env.CORS_ORIGINS ?? '',
+			// Gate property applications on KYC-verified seekers. Ship OFF until the
+			// KYC verification flow exists — flipping it on with no way to get
+			// verified would block all applications.
+			requireKycToApply: (process.env.REQUIRE_KYC_TO_APPLY ?? 'false').toLowerCase() === 'true'
 		};
 
 		/*database*/

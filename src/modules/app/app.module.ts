@@ -12,9 +12,29 @@ import { AmenityModule } from '../amenity/amenity.module';
 import { MediaModule } from '../media/media.module';
 import { PropertyTypeModule } from '../property-type/property-type.module';
 import { GeoModule } from '../geo/geo.module';
+import { ApplicationModule } from '../application/application.module';
+import { NotificationModule } from '../notification/notification.module';
+import { RealtimeModule } from '@app/core/realtime/realtime.module';
+import { ChatModule } from '../chat/chat.module';
 
 @Module({
-	imports: [CoreModule, AuthorizationModule, SessionModule, UserModule, InquiryModule, PropertyModule, CityModule, AmenityModule, MediaModule, PropertyTypeModule, GeoModule],
+	imports: [
+		CoreModule,
+		AuthorizationModule,
+		SessionModule,
+		UserModule,
+		InquiryModule,
+		PropertyModule,
+		CityModule,
+		AmenityModule,
+		MediaModule,
+		PropertyTypeModule,
+		GeoModule,
+		ApplicationModule,
+		NotificationModule,
+		RealtimeModule,
+		ChatModule
+	],
 	controllers: [AppController],
 	providers: [AppService]
 })

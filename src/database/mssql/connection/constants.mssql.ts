@@ -15,6 +15,7 @@ export class MsSqlConstants {
 	static readonly STAY_PRICING_TIERS = 'STAY_PRICING_TIERS';
 	static readonly PROPERTY_MEDIA = 'PROPERTY_MEDIA';
 	static readonly PROPERTY_AMENITIES = 'PROPERTY_AMENITIES';
+	static readonly PROPERTY_APPLICATIONS = 'PROPERTY_APPLICATIONS';
 	static readonly INQUIRIES = 'INQUIRIES';
 	static readonly CONVERSATIONS = 'CONVERSATIONS';
 	static readonly MESSAGES = 'MESSAGES';

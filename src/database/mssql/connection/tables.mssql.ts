@@ -14,6 +14,7 @@ export enum Tables {
 	StayPricingTiers = 'StayPricingTiers',
 	PropertyMedia = 'PropertyMedia',
 	PropertyAmenities = 'PropertyAmenities',
+	PropertyApplications = 'PropertyApplications',
 	Inquiries = 'Inquiries',
 	Conversations = 'Conversations',
 	Messages = 'Messages',

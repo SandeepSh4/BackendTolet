@@ -13,6 +13,7 @@ export * from './listing.model';
 export * from './stay-pricing-tier.model';
 export * from './property-media.model';
 export * from './property-amenity.model';
+export * from './property-application.model';
 export * from './inquiry.model';
 export * from './conversation.model';
 export * from './message.model';
